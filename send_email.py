@@ -1,0 +1,31 @@
+import smtplib
+from email.message import EmailMessage
+import os
+
+# Set recipient email directly
+recipient_email = "g.nitin2k4@gmail.com"
+sender_email = "yudham.email@gmail.com"
+subject = "Yudham New Post"
+body = "Here’s our new post! Check the attached image."
+
+# The image filename as in your repo
+image_path = "quote_output_20251016_114637.jpg"
+
+# Create the email message
+msg = EmailMessage()
+msg['Subject'] = subject
+msg['From'] = sender_email
+msg['To'] = recipient_email
+msg.set_content(body)
+
+# Attach the image file from repo directory
+with open(image_path, "rb") as img_file:
+    img_data = img_file.read()
+    msg.add_attachment(img_data, maintype='image', subtype='jpeg', filename=os.path.basename(image_path))
+
+# Send email using secure app password from environment variable
+with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+    smtp.login(sender_email, os.getenv("EMAIL_PASSWORD"))
+    smtp.send_message(msg)
+
+print(f"Email sent successfully to {recipient_email}")
